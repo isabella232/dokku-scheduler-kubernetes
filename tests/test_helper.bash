@@ -73,3 +73,21 @@ assert_output() {
   fi
   assert_equal "$expected" "$output"
 }
+
+create_app() {
+  declare APP="$1"
+  local TEST_APP=${APP:=$TEST_APP}
+
+  dokku apps:create "$TEST_APP"
+  dokku config:set "$TEST_APP" DOKKU_SCHEDULER=kubernetes
+  dokku registry:set "$TEST_APP" server docker.io
+}
+
+destroy_app() {
+  local RC="$1"
+  local RC=${RC:=0}
+  local APP="$2"
+  local TEST_APP=${APP:=$TEST_APP}
+  dokku --force apps:destroy "$TEST_APP"
+  return "$RC"
+}

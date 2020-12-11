@@ -2,11 +2,11 @@
 load test_helper
 
 setup() {
-  dokku apps:create "$TEST_APP"
+  create_app
 }
 
 teardown() {
-  dokku --force apps:destroy "$TEST_APP"
+  destroy_app
 }
 
 @test "($PLUGIN_COMMAND_PREFIX:hook:set) cert-manager-enabled" {
