@@ -2,6 +2,9 @@
 export DOKKU_LIB_ROOT="/var/lib/dokku"
 source "$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")/config"
 
+UUID=$(tr -dc 'a-z0-9' </dev/urandom | fold -w 32 | head -n 1)
+TEST_APP="rdmtestapp-${UUID}"
+
 flunk() {
   {
     if [ "$#" -eq 0 ]; then
