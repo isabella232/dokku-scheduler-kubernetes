@@ -34,7 +34,7 @@ sudo dokku plugin:install
 
 # install the registry dependency
 # TODO: use a `plugn` command
-sudo dokku plugin:install https://github.com/dokku/dokku-registry.git registry
+sudo dokku plugin:install git@github.com:dokku/dokku-registry.git registry
 
 # setup kube config for dokku user
 sudo mkdir -p /home/dokku/.kube
