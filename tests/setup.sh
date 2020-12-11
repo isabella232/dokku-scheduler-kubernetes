@@ -36,6 +36,10 @@ sudo dokku plugin:install
 # TODO: use a `plugn` command
 sudo dokku plugin:install git://github.com/dokku/dokku-registry.git registry
 
+# install k3s
+curl -sfL -o k3s.sh https://get.k3s.io
+sudo sh k3s.sh
+
 # setup kube config for dokku user
 sudo mkdir -p /home/dokku/.kube
 sudo cp -f /etc/rancher/k3s/k3s.yaml /home/dokku/.kube/config
