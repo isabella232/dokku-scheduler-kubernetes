@@ -29,3 +29,27 @@ sudo find ./ -maxdepth 1 -type f -exec cp '{}' "$DOKKU_PLUGINS_ROOT/$PLUGIN_COMM
 sudo mkdir -p "$PLUGIN_CONFIG_ROOT" "$PLUGIN_DATA_ROOT"
 sudo dokku plugin:enable "$PLUGIN_COMMAND_PREFIX"
 sudo dokku plugin:install
+
+## k3s testing setup
+
+# install the registry dependency
+# TODO: use a `plugn` command
+sudo dokku plugin:install https://github.com/dokku/dokku-registry.git registry
+
+# setup kube config for dokku user
+sudo mkdir -p /home/dokku/.kube
+sudo cp -f /etc/rancher/k3s/k3s.yaml /home/dokku/.kube/config
+sudo chown -R dokku:dokku /home/dokku/.kube
+
+# ensure we can access the registry locally
+# TODO: run the registry locally somehow
+if [[ -n "$DOCKERHUB_USERNAME" ]] && [[ -n "$DOCKERHUB_PASSWORD" ]]; then
+  export KUBECONFIG=/home/dokku/.kube/config
+  sudo kubectl delete secret registry-credential || true
+  sudo dokku registry:login docker.io "$DOCKERHUB_USERNAME" "$DOCKERHUB_PASSWORD"
+  sudo kubectl create secret generic registry-credential \
+      --from-file=.dockerconfigjson=/home/dokku/.docker/config.json \
+      --type=kubernetes.io/dockerconfigjson
+else
+  echo "Dockerhub username or password missing, skipping login to registry"
+fi
